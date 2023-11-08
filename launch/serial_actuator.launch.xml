@@ -1,0 +1,34 @@
+<launch>
+    <!-- Parameters -->
+    <arg name="serial_param_path" default="/home/thomas/Code/ros2_ws/src/transport_drivers/serial_driver/params"/>
+    
+    <!-- wheel encoder st76 -->
+    <group>
+        <push-ros-namespace namespace="wheel_encoder"/>
+        <include file="$(find-pkg-share serial_driver)/launch/serial_driver_bridge_node.launch.py">
+            <arg name="params_file" value="$(var serial_param_path)/wheel_encoder.params.yaml"/>
+        </include>
+        <node pkg="ros2_st76" exec="st76_node" name="st76_node" output="screen"/>
+        <node pkg="ros2_st76" exec="vehicle_speed_rpt_publisher_node" name="vehicle_speed_rpt_publisher_node" output="screen"/>
+    </group>
+
+    <!-- steer actuator -->
+    <group>
+        <push-ros-namespace namespace="steer"/>
+        <include file="$(find-pkg-share serial_driver)/launch/serial_driver_bridge_node.launch.py">
+            <arg name="params_file" value="$(var serial_param_path)/steer.params.yaml"/>
+        </include>
+        <node pkg="dummy_node" exec="steer_publisher" name="steer_publisher" output="screen"/>
+    </group>
+
+    <!-- brake actuator -->
+    <group>
+        <push-ros-namespace namespace="brake"/>
+        <include file="$(find-pkg-share serial_driver)/launch/serial_driver_bridge_node.launch.py">
+            <arg name="params_file" value="$(var serial_param_path)/brake.params.yaml"/>
+        </include>
+        <node pkg="dummy_node" exec="brake_publisher" name="brake_publisher" output="screen"/>
+    </group>
+
+</launch>
+
